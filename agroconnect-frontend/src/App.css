@@ -1,0 +1,4 @@
+/* Global layout reset for full-width app */
+#root {
+  min-height: 100vh;
+}

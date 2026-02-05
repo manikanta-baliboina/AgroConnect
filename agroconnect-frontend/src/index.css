@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --farm-ink: #1f2937;
+  --farm-muted: #64748b;
+  --farm-forest: #1f5f3b;
+  --farm-field: #6b8e23;
+  --farm-wheat: #f3e8d1;
+  --farm-cream: #faf7f0;
+  --farm-border: #e2e8f0;
+}
+
+body {
+  margin: 0;
+  font-family: "Outfit", "Segoe UI", system-ui, sans-serif;
+  background:
+    radial-gradient(900px 500px at 10% -10%, rgba(107, 142, 35, 0.18), transparent 55%),
+    radial-gradient(800px 500px at 85% 10%, rgba(31, 95, 59, 0.18), transparent 55%),
+    radial-gradient(700px 500px at 60% 90%, rgba(243, 232, 209, 0.35), transparent 55%),
+    #f8f6ef;
+  color: var(--farm-ink);
+}
+
+.input {
+  @apply w-full p-2.5 border border-emerald-100 rounded-lg focus:ring-2 focus:ring-farmGreen outline-none bg-white/90;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 20px 50px -40px rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(10px);
+}
+
+@layer components {
+  .page-shell {
+    @apply max-w-7xl mx-auto px-6;
+  }
+
+  .section-title {
+    @apply text-2xl font-semibold text-slate-800;
+  }
+
+  .section-sub {
+    @apply text-sm text-slate-500;
+  }
+
+  .card {
+    @apply bg-white border border-slate-200 rounded-xl shadow-sm;
+  }
+
+  .card-soft {
+    @apply bg-white/90 border border-slate-200 rounded-xl shadow-sm;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg text-white bg-emerald-700 hover:bg-emerald-800 transition;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50 transition;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-100 transition;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700;
+  }
+
+  .nav-link {
+    @apply text-sm font-medium text-white/90 hover:text-white;
+  }
+
+  .nav-pill {
+    @apply text-sm font-medium px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white;
+  }
+}
