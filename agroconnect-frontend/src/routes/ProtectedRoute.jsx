@@ -13,7 +13,10 @@ export default function ProtectedRoute({ children, role, allowedRole }) {
     return <Navigate to="/login" replace />;
   }
 
-  if (requiredRole && user.role !== requiredRole) {
+  if (
+    requiredRole &&
+    user.role.toUpperCase() !== requiredRole.toUpperCase()
+  ) {
     return <Navigate to="/" replace />;
   }
 

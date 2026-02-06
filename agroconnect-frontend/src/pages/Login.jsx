@@ -28,7 +28,7 @@ export default function Login() {
 
       login(res.data);
 
-      if (res.data.role === "FARMER") {
+      if ((res.data.role || "").toUpperCase() === "FARMER") {
         navigate("/farmer");
       } else {
         navigate("/customer");
