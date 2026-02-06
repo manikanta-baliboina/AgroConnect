@@ -66,6 +66,7 @@ MIDDLEWARE = [
 # CORS / CSRF
 # --------------------------------------------------
 CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "https://agroconnect-app-sm6g.onrender.com",
 ]
