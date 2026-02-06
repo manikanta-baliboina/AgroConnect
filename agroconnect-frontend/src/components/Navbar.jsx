@@ -8,12 +8,13 @@ export default function NavBar() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const { totalItems } = useCart();
+  const role = (user?.role || localStorage.getItem("role") || "").toUpperCase();
 
   const handleSearch = (event) => {
     event.preventDefault();
     const trimmed = query.trim();
     if (!trimmed) return;
-    if (user?.role !== "CUSTOMER") {
+    if (role !== "CUSTOMER") {
       navigate("/login");
       return;
     }
@@ -69,7 +70,7 @@ export default function NavBar() {
           <Link to="/" className="nav-pill">
             Home
           </Link>
-          {user?.role === "CUSTOMER" && (
+          {role === "CUSTOMER" && (
             <>
               <Link to="/customer" className="nav-pill">
                 Marketplace
@@ -87,7 +88,7 @@ export default function NavBar() {
               </Link>
             </>
           )}
-          {user?.role === "FARMER" && (
+          {role === "FARMER" && (
             <>
               <Link to="/farmer" className="nav-pill">
                 Dashboard
@@ -100,7 +101,7 @@ export default function NavBar() {
         </div>
 
         <div className="flex items-center gap-2 ml-auto">
-          {!user ? (
+          {!role ? (
             <>
               <Link to="/login" className="btn-outline border-white/30 text-white">
                 Login
