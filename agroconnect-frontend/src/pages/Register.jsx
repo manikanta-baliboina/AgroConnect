@@ -2,9 +2,11 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import { useAuth } from "../context/AuthContext";
 
 export default function Register() {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [form, setForm] = useState({
     username: "",
@@ -33,7 +35,7 @@ export default function Register() {
     }
 
     try {
-      await api.post("/auth/register/", {
+      const res = await api.post("/auth/register/", {
         username: form.username,
         email: form.email,
         password: form.password,
@@ -43,7 +45,13 @@ export default function Register() {
         address: form.address,
       });
 
-      navigate("/login");
+      login(res.data);
+
+      if ((res.data.role || "").toUpperCase() === "FARMER") {
+        navigate("/farmer");
+      } else {
+        navigate("/customer");
+      }
     } catch (err) {
       setError("Registration failed. Try again.");
     }
