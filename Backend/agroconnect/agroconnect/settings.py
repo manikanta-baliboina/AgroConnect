@@ -50,11 +50,9 @@ INSTALLED_APPS = [
 # MIDDLEWARE
 # --------------------------------------------------
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-
-    "corsheaders.middleware.CorsMiddleware",
-
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -67,13 +65,12 @@ MIDDLEWARE = [
 # --------------------------------------------------
 # CORS / CSRF
 # --------------------------------------------------
-CORS_ALLOW_ALL_ORIGINS = True
-
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "https://agroconnect-app-sm6g.onrender.com",
+]
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://*.vercel.app",
-    "https://*.onrender.com",
+"https://agroconnect-app-sm6g.onrender.com",
 ]
 
 # --------------------------------------------------

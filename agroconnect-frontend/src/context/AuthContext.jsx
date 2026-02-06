@@ -16,13 +16,13 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
-  const login = (data) => {
-    const role = (data.role || "").toUpperCase();
-    localStorage.setItem("access", data.access);
-    localStorage.setItem("refresh", data.refresh);
-    localStorage.setItem("role", role);
-    setUser({ role });
-  };
+const login = (data) => {
+  localStorage.setItem("access", data.access);
+  localStorage.setItem("refresh", data.refresh);
+  localStorage.setItem("role", data.role);
+  setUser({ role: data.role });
+};
+
 
   const logout = () => {
     localStorage.clear();

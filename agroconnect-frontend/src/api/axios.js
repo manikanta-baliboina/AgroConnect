@@ -1,15 +1,7 @@
 import axios from "axios";
 
-const envBase =
-  import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL;
-const apiBase =
-  envBase ||
-  (import.meta.env.MODE === "production"
-    ? "https://agroconnect-oezp.onrender.com/api"
-    : "http://127.0.0.1:8000/api");
-
 const api = axios.create({
-  baseURL: apiBase,
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 api.interceptors.request.use((config) => {
