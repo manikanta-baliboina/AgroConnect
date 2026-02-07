@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
+import { normalizeRole } from "../utils/auth";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ export default function Register() {
 
       login(res.data);
 
-      if ((res.data.role || "").toUpperCase() === "FARMER") {
+      if (normalizeRole(res.data?.role) === "FARMER") {
         navigate("/farmer");
       } else {
         navigate("/customer");

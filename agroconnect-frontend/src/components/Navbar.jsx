@@ -2,13 +2,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
+import { normalizeRole } from "../utils/auth";
 
 export default function NavBar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const { totalItems } = useCart();
-  const role = (user?.role || localStorage.getItem("role") || "").toUpperCase();
+  const role = normalizeRole(user?.role || localStorage.getItem("role"));
 
   const handleSearch = (event) => {
     event.preventDefault();

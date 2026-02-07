@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { normalizeRole } from "../utils/auth";
 
 const AuthContext = createContext(null);
 
@@ -7,22 +8,35 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const role = localStorage.getItem("role");
+    const storedRole = normalizeRole(localStorage.getItem("role"));
 
-    if (role) {
-      setUser({ role: role.toUpperCase() });
+    if (storedRole) {
+      setUser({ role: storedRole });
     }
 
     setLoading(false);
   }, []);
 
-const login = (data) => {
-  localStorage.setItem("access", data.access);
-  localStorage.setItem("refresh", data.refresh);
-  localStorage.setItem("role", data.role);
-  setUser({ role: data.role });
-};
+  const login = (data) => {
+    if (data?.access) {
+      localStorage.setItem("access", data.access);
+    }
 
+    if (data?.refresh) {
+      localStorage.setItem("refresh", data.refresh);
+    }
+
+    const role = normalizeRole(data?.role || localStorage.getItem("role"));
+
+    if (role) {
+      localStorage.setItem("role", role);
+      setUser({ role });
+      return;
+    }
+
+    localStorage.removeItem("role");
+    setUser(null);
+  };
 
   const logout = () => {
     localStorage.clear();
