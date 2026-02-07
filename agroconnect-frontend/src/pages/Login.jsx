@@ -20,6 +20,22 @@ export default function Login() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const detectRoleFromDashboards = async () => {
+    try {
+      await api.get("/customer/dashboard/");
+      return "CUSTOMER";
+    } catch {
+      // Continue with farmer check.
+    }
+
+    try {
+      await api.get("/farmer/dashboard/");
+      return "FARMER";
+    } catch {
+      return "";
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -27,13 +43,28 @@ export default function Login() {
     try {
       const res = await api.post("/auth/login/", form);
 
+      // Store tokens first so role fallback checks can use authenticated requests.
       login(res.data);
 
-      if (normalizeRole(res.data?.role) === "FARMER") {
-        navigate("/farmer");
-      } else {
-        navigate("/customer");
+      let role = normalizeRole(res.data?.role || localStorage.getItem("role"));
+      if (!role) {
+        role = await detectRoleFromDashboards();
+        if (role) {
+          login({ role });
+        }
       }
+
+      if (role === "FARMER") {
+        navigate("/farmer");
+        return;
+      }
+
+      if (role === "CUSTOMER") {
+        navigate("/customer");
+        return;
+      }
+
+      setError("Login succeeded, but role could not be determined.");
     } catch (err) {
       setError("Invalid username or password");
     }
