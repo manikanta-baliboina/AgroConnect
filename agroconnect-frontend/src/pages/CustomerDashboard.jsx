@@ -9,7 +9,7 @@ export default function CustomerDashboard() {
   useEffect(() => {
     setMetricsLoading(true);
     api
-      .get("/customer/dashboard/")
+      .get("customer/dashboard/")
       .then((res) => setMetrics(res.data.metrics))
       .finally(() => setMetricsLoading(false));
   }, []);

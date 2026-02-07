@@ -5,7 +5,7 @@ const API_BASE_URL = (
 ).replace(/\/+$/, "");
 
 const api = axios.create({
-  baseURL: `${API_BASE_URL}/api`,
+  baseURL: `${API_BASE_URL}/api/`, // ✅ trailing slash FIX
   headers: {
     "Content-Type": "application/json",
   },
