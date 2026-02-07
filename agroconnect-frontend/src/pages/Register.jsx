@@ -52,7 +52,7 @@ export default function Register() {
     }
 
     try {
-      const res = await api.post("auth/register/", {
+      const res = await api.post("/auth/register/", {
         username: form.username,
         email: form.email,
         password: form.password,

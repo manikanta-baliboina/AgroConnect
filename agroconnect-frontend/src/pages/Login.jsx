@@ -41,7 +41,7 @@ export default function Login() {
     setError("");
 
     try {
-      const res = await api.post("auth/login/", form);
+      const res = await api.post("/auth/login/", form);
 
       // Store tokens first so role fallback checks can use authenticated requests.
       login(res.data);
