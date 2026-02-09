@@ -37,7 +37,7 @@ export default function CropDetails() {
     const load = async () => {
       try {
         setLoading(true);
-        const res = await api.get(`/crops/${id}/`);
+        const res = await api.get(`crops/${id}/`);
         if (active) {
           setCrop(res.data || null);
         }
@@ -59,7 +59,7 @@ export default function CropDetails() {
     const loadReviews = async () => {
       try {
         setReviewsLoading(true);
-        const res = await api.get(`/crops/${id}/reviews/`);
+        const res = await api.get(`crops/${id}/reviews/`);
         if (active) {
           setReviews(Array.isArray(res.data) ? res.data : []);
         }

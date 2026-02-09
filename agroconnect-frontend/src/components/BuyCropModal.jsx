@@ -69,7 +69,7 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
     const loadReviews = async () => {
       try {
         setReviewsLoading(true);
-        const res = await api.get(`/crops/${crop.id}/reviews/`);
+        const res = await api.get(`crops/${crop.id}/reviews/`);
         if (active) {
           setReviews(Array.isArray(res.data) ? res.data : []);
         }
@@ -108,7 +108,7 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
         return;
       }
 
-      await api.post("/orders/place/", {
+      await api.post("orders/place/", {
         items: [
           {
             crop_id: crop.id,
@@ -133,12 +133,12 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
     setReviewError("");
     try {
       setReviewSubmitting(true);
-      await api.post(`/crops/${crop.id}/reviews/`, {
+      await api.post(`crops/${crop.id}/reviews/`, {
         rating: Number(reviewForm.rating),
         comment: reviewForm.comment,
       });
       setReviewForm({ rating: 5, comment: "" });
-      const res = await api.get(`/crops/${crop.id}/reviews/`);
+      const res = await api.get(`crops/${crop.id}/reviews/`);
       setReviews(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       setReviewError(err.response?.data?.error || "Review submission failed");

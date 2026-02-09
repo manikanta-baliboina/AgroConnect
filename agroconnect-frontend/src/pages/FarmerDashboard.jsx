@@ -17,7 +17,7 @@ export default function FarmerDashboard() {
   const fetchCrops = () => {
     setLoading(true);
     api
-      .get("/farmer/crops/")
+      .get("farmer/crops/")
       .then((res) => setCrops(res.data))
       .finally(() => setLoading(false));
   };
@@ -25,7 +25,7 @@ export default function FarmerDashboard() {
   const fetchMetrics = () => {
     setMetricsLoading(true);
     api
-      .get("/auth/farmer/dashboard/")
+      .get("auth/farmer/dashboard/")
       .then((res) => setMetrics(res.data.metrics))
       .finally(() => setMetricsLoading(false));
   };
@@ -33,7 +33,7 @@ export default function FarmerDashboard() {
   const fetchProfile = () => {
     setProfileLoading(true);
     api
-      .get("/auth/farmer/profile/")
+      .get("auth/farmer/profile/")
       .then((res) => {
         setProfile({
           farm_name: res.data.farm_name || "",
@@ -51,7 +51,7 @@ export default function FarmerDashboard() {
 
   const handleAdd = (data) => {
     api
-      .post("/farmer/crops/", data, {
+      .post("farmer/crops/", data, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then(() => {
@@ -63,7 +63,7 @@ export default function FarmerDashboard() {
 
   const handleEdit = (data) => {
     api
-      .patch(`/farmer/crops/${editCrop.id}/`, data, {
+      .patch(`farmer/crops/${editCrop.id}/`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then(() => {
@@ -75,7 +75,7 @@ export default function FarmerDashboard() {
 
   const handleDelete = (id) => {
     if (!window.confirm("Delete this crop?")) return;
-    api.delete(`/farmer/crops/${id}/`).then(() => {
+    api.delete(`farmer/crops/${id}/`).then(() => {
       fetchCrops();
       fetchMetrics();
     });
@@ -89,7 +89,7 @@ export default function FarmerDashboard() {
   const saveProfile = async () => {
     try {
       setProfileSaving(true);
-      await api.put("/auth/farmer/profile/", profile);
+      await api.put("auth/farmer/profile/", profile);
       fetchProfile();
     } catch (err) {
       console.error("Profile update failed", err);

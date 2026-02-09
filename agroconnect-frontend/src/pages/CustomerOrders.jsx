@@ -12,7 +12,7 @@ export default function CustomerOrders() {
       try {
         setLoading(true);
         setError("");
-        const res = await api.get("/orders/");
+        const res = await api.get("orders/");
         if (Array.isArray(res.data)) {
           setOrders(res.data);
         } else if (res.data.results) {

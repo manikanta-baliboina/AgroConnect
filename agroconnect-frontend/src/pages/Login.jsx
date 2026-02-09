@@ -22,14 +22,14 @@ export default function Login() {
 
   const detectRoleFromDashboards = async () => {
     try {
-      await api.get("/customer/dashboard/");
+      await api.get("auth/customer/dashboard/");
       return "CUSTOMER";
     } catch {
       // Continue with farmer check.
     }
 
     try {
-      await api.get("/farmer/dashboard/");
+      await api.get("auth/farmer/dashboard/");
       return "FARMER";
     } catch {
       return "";

@@ -24,7 +24,7 @@ export default function FarmerOrders() {
   const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await api.get("/farmer/orders/", {
+      const res = await api.get("farmer/orders/", {
         params: {
           page,
           page_size: pageSize,
@@ -74,7 +74,7 @@ export default function FarmerOrders() {
 
   const updateStatus = async (orderId, status) => {
     try {
-      await api.patch(`/farmer/orders/${orderId}/status/`, { status });
+      await api.patch(`farmer/orders/${orderId}/status/`, { status });
       fetchOrders();
     } catch {
       alert("Status update failed");

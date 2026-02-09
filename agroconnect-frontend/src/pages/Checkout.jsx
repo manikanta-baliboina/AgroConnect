@@ -42,7 +42,7 @@ export default function Checkout() {
     }
     try {
       setSubmitting(true);
-      await api.post("/orders/place/", {
+      await api.post("orders/place/", {
         items: items.map((item) => ({
           crop_id: item.id,
           quantity_kg: item.qty,
