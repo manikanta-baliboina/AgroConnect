@@ -51,9 +51,7 @@ export default function FarmerDashboard() {
 
   const handleAdd = (data) => {
     api
-      .post("farmer/crops/", data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
+      .post("farmer/crops/", data)
       .then(() => {
       setModalOpen(false);
       fetchCrops();
@@ -63,9 +61,7 @@ export default function FarmerDashboard() {
 
   const handleEdit = (data) => {
     api
-      .patch(`farmer/crops/${editCrop.id}/`, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
+      .patch(`farmer/crops/${editCrop.id}/`, data)
       .then(() => {
       setEditCrop(null);
       fetchCrops();

@@ -39,8 +39,8 @@ urlpatterns = [
 
 ]
 
-urlpatterns += static(
-    settings.MEDIA_URL,
-    document_root=settings.MEDIA_ROOT,
-    insecure=True,
-)
+if settings.DEBUG and not getattr(settings, "USE_CLOUDINARY_STORAGE", False):
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT,
+    )
