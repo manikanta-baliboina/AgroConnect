@@ -6,13 +6,16 @@ export default function FarmerCropCard({ crop, onEdit, onDelete }) {
   ).replace(/\/+$/, "");
 
   const rawImage = crop.image_url || crop.image || "";
-  const imageSrc = rawImage
-    ? rawImage.startsWith("http://") ||
-      rawImage.startsWith("https://") ||
-      rawImage.startsWith("data:") ||
-      rawImage.startsWith("blob:")
-      ? rawImage
-      : `${backendBaseUrl}${rawImage.startsWith("/") ? "" : "/"}${rawImage}`
+  const normalizedRawImage = rawImage.startsWith("http://agroconnect-oezp.onrender.com")
+    ? rawImage.replace("http://", "https://")
+    : rawImage;
+  const imageSrc = normalizedRawImage
+    ? normalizedRawImage.startsWith("http://") ||
+      normalizedRawImage.startsWith("https://") ||
+      normalizedRawImage.startsWith("data:") ||
+      normalizedRawImage.startsWith("blob:")
+      ? normalizedRawImage
+      : `${backendBaseUrl}${normalizedRawImage.startsWith("/") ? "" : "/"}${normalizedRawImage}`
     : "";
 
   return (
