@@ -1,14 +1,28 @@
 import { motion } from "framer-motion";
 
 export default function FarmerCropCard({ crop, onEdit, onDelete }) {
+  const backendBaseUrl = (
+    import.meta.env.VITE_API_BASE_URL || "https://agroconnect-oezp.onrender.com"
+  ).replace(/\/+$/, "");
+
+  const rawImage = crop.image_url || crop.image || "";
+  const imageSrc = rawImage
+    ? rawImage.startsWith("http://") ||
+      rawImage.startsWith("https://") ||
+      rawImage.startsWith("data:") ||
+      rawImage.startsWith("blob:")
+      ? rawImage
+      : `${backendBaseUrl}${rawImage.startsWith("/") ? "" : "/"}${rawImage}`
+    : "";
+
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
       className="bg-white p-6 rounded-xl shadow-md border w-full max-w-md mx-auto"
     >
-      {crop.image_url || crop.image ? (
+      {imageSrc ? (
         <img
-          src={crop.image_url || crop.image}
+          src={imageSrc}
           alt={crop.name}
           className="w-full h-48 object-cover rounded-lg mb-3"
         />
