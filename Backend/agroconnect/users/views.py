@@ -6,10 +6,11 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsFarmer, IsCustomer
 from django.contrib.auth import authenticate
-from django.db.models import Sum, F, DecimalField
+from django.db.models import Sum, F, DecimalField, IntegerField, Value
 from django.db.models.functions import Coalesce
 from django.utils import timezone
 from datetime import timedelta
+from decimal import Decimal
 
 
 
@@ -76,7 +77,11 @@ class FarmerDashboardView(APIView):
 
         total_crops = crops_qs.count()
         total_stock_kg = crops_qs.aggregate(
-            total=Coalesce(Sum('quantity_kg'), 0)
+            total=Coalesce(
+                Sum('quantity_kg'),
+                Value(0),
+                output_field=IntegerField()
+            )
         )['total']
 
         total_orders = order_items_qs.values('order_id').distinct().count()
@@ -94,7 +99,14 @@ class FarmerDashboardView(APIView):
         confirmed_revenue = order_items_qs.filter(
             order__status='CONFIRMED'
         ).aggregate(
-            total=Coalesce(Sum(revenue_expr, output_field=DecimalField(max_digits=12, decimal_places=2)), 0)
+            total=Coalesce(
+                Sum(
+                    revenue_expr,
+                    output_field=DecimalField(max_digits=12, decimal_places=2)
+                ),
+                Value(Decimal("0.00")),
+                output_field=DecimalField(max_digits=12, decimal_places=2)
+            )
         )['total']
 
         last_7_days = timezone.now() - timedelta(days=7)
@@ -128,7 +140,11 @@ class CustomerDashboardView(APIView):
         confirmed_orders = orders_qs.filter(status='CONFIRMED').count()
         cancelled_orders = orders_qs.filter(status='CANCELLED').count()
         total_spent = orders_qs.filter(status='CONFIRMED').aggregate(
-            total=Coalesce(Sum('total_amount'), 0)
+            total=Coalesce(
+                Sum('total_amount'),
+                Value(Decimal("0.00")),
+                output_field=DecimalField(max_digits=10, decimal_places=2)
+            )
         )['total']
 
         last_7_days = timezone.now() - timedelta(days=7)
