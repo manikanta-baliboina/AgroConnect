@@ -5,17 +5,19 @@ const API_BASE_URL = (
 ).replace(/\/+$/, "");
 
 const api = axios.create({
-  baseURL: `${API_BASE_URL}/api/`, // ✅ trailing slash FIX
-  headers: {
-    "Content-Type": "application/json",
-  },
+  baseURL: `${API_BASE_URL}/api/`,
 });
 
 api.interceptors.request.use((config) => {
+  if (config.data instanceof FormData && config.headers) {
+    delete config.headers["Content-Type"];
+  }
+
   const token = localStorage.getItem("access");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 
