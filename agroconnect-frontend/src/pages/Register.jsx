@@ -21,33 +21,21 @@ export default function Register() {
   });
 
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const detectRoleFromDashboards = async () => {
-    try {
-      await api.get("auth/customer/dashboard/");
-      return "CUSTOMER";
-    } catch {
-      // Continue with farmer check.
-    }
-
-    try {
-      await api.get("auth/farmer/dashboard/");
-      return "FARMER";
-    } catch {
-      return "";
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return;
     setError("");
+    setSubmitting(true);
 
     if (form.password !== form.confirmPassword) {
       setError("Passwords do not match");
+      setSubmitting(false);
       return;
     }
 
@@ -64,13 +52,7 @@ export default function Register() {
 
       login(res.data);
 
-      let role = normalizeRole(res.data?.role || localStorage.getItem("role"));
-      if (!role) {
-        role = await detectRoleFromDashboards();
-        if (role) {
-          login({ role });
-        }
-      }
+      const role = normalizeRole(res.data?.role || localStorage.getItem("role"));
 
       if (role === "FARMER") {
         navigate("/farmer");
@@ -85,6 +67,8 @@ export default function Register() {
       setError("Registration succeeded, but role could not be determined.");
     } catch (err) {
       setError("Registration failed. Try again.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -94,7 +78,7 @@ export default function Register() {
         onSubmit={handleSubmit}
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.2 }}
         className="glass-panel p-8 rounded-2xl w-full max-w-lg"
       >
         <h2 className="text-3xl font-bold text-farmGreen text-center flex items-center justify-center gap-2">
@@ -224,9 +208,10 @@ export default function Register() {
 
         <button
           type="submit"
-          className="w-full mt-6 bg-farmGreen text-white py-3 rounded-xl font-semibold hover:scale-105 transition-transform"
+          disabled={submitting}
+          className="w-full mt-6 bg-farmGreen text-white py-3 rounded-xl font-semibold hover:scale-105 transition-transform disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          Create Account
+          {submitting ? "Creating account..." : "Create Account"}
         </button>
 
         <p className="text-sm text-center mt-5">
