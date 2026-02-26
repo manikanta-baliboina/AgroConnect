@@ -24,8 +24,8 @@ export default function NavBar() {
 
   return (
     <nav className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-lime-800 text-white shadow-lg sticky top-0 z-50">
-      <div className="page-shell py-3 flex flex-wrap items-center gap-4">
-        <Link to="/" className="text-2xl font-bold flex items-center gap-2">
+      <div className="page-shell app-navbar-shell py-3 flex flex-wrap items-center gap-4">
+        <Link to="/" className="app-navbar-brand text-2xl font-bold flex items-center gap-2">
           <span className="inline-flex items-center justify-center w-9 h-9 bg-white/15 rounded-full">
             <svg
               viewBox="0 0 24 24"
@@ -47,7 +47,7 @@ export default function NavBar() {
           AgroConnect
         </Link>
 
-        <div className="flex-1 min-w-[220px]">
+        <div className="app-navbar-search flex-1 min-w-[220px]">
           <form
             onSubmit={handleSearch}
             className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 flex items-center gap-2"
@@ -67,7 +67,7 @@ export default function NavBar() {
           </form>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="app-navbar-links flex items-center gap-2">
           <Link to="/" className="nav-pill">
             Home
           </Link>
@@ -101,7 +101,7 @@ export default function NavBar() {
           )}
         </div>
 
-        <div className="flex items-center gap-2 ml-auto">
+        <div className="app-navbar-auth flex items-center gap-2 ml-auto">
           {!role ? (
             <>
               <Link to="/login" className="btn-outline border-white/30 text-white">
