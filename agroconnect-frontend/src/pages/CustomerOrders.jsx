@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import OrderStatusBadge from "../components/OrderStatusBadge";
+import { useLanguage } from "../context/LanguageContext";
+import { OrdersSkeleton } from "../components/LoadingSkeletons";
 
 export default function CustomerOrders() {
+  const { t } = useLanguage();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -24,9 +27,9 @@ export default function CustomerOrders() {
         console.error("Failed to load customer orders", err);
         const status = err?.response?.status;
         if (status === 401 || status === 403) {
-          setError("Please log in as a customer to view your orders.");
+          setError(t("pleaseLoginCustomer"));
         } else {
-          setError("Could not load orders. Please try again.");
+          setError(t("couldNotLoadOrders"));
         }
       } finally {
         setLoading(false);
@@ -39,15 +42,15 @@ export default function CustomerOrders() {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold text-farmGreen mb-6">
-        {"\u{1F6D2}"} My Orders
+        {"\u{1F6D2}"} {t("myOrders")}
       </h1>
 
       {loading ? (
-        <p>Loading orders...</p>
+        <OrdersSkeleton rows={3} />
       ) : error ? (
         <p className="text-red-600">{error}</p>
       ) : orders.length === 0 ? (
-        <p>No orders yet.</p>
+        <p>{t("noOrdersYet")}</p>
       ) : (
         <div className="space-y-4">
           {orders.map((order) => (
@@ -57,13 +60,13 @@ export default function CustomerOrders() {
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="text-sm text-gray-600">
-                  Order #{order.id}
+                  {t("orderId")} #{order.id}
                 </div>
                 <OrderStatusBadge status={order.status} />
               </div>
 
               <div className="mt-2 text-sm text-gray-700">
-                Payment: {order.payment_method} ({order.payment_status})
+                {t("payment")}: {order.payment_method} ({order.payment_status})
               </div>
 
               <div className="mt-3 divide-y">
@@ -81,7 +84,7 @@ export default function CustomerOrders() {
               </div>
 
               <div className="mt-3 font-semibold text-right">
-                Total: Rs {Number(order.total_amount || 0).toFixed(2)}
+                {t("total")}: Rs {Number(order.total_amount || 0).toFixed(2)}
               </div>
             </div>
           ))}

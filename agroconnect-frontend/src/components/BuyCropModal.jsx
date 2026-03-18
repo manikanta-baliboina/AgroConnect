@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import api from "../api/axios";
+import { useLanguage } from "../context/LanguageContext";
+import SmartImage from "./SmartImage";
 
 function Stars({ value = 0 }) {
   const rounded = Math.round(value);
@@ -19,6 +21,7 @@ function Stars({ value = 0 }) {
 }
 
 export default function BuyCropModal({ crop, onClose, onSuccess }) {
+  const { t } = useLanguage();
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("UPI");
@@ -103,7 +106,7 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
       ];
       const missing = requiredFields.filter((field) => !address[field]);
       if (missing.length > 0) {
-        setAddressError("Please complete the delivery address.");
+        setAddressError(t("completeDeliveryAddress"));
         setLoading(false);
         return;
       }
@@ -123,7 +126,7 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
       onClose();
     } catch (err) {
       console.error("ORDER ERROR", err.response?.data || err);
-      alert("Order failed");
+      alert(t("orderFailed"));
     } finally {
       setLoading(false);
     }
@@ -152,14 +155,17 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`${t("buyNow")} ${crop.name}`}
         className="bg-white p-6 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto"
       >
         <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr]">
           <div>
             {crop.image_url || crop.image ? (
-              <img
+              <SmartImage
                 src={crop.image_url || crop.image}
-                alt={crop.name}
+                alt={`${crop.name} crop from ${crop.farm_name || crop.farmer_name || "a verified"} farm`}
                 className="w-full h-52 object-cover rounded-lg mb-4"
               />
             ) : (
@@ -169,11 +175,11 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
             )}
 
             <h3 className="text-2xl font-bold text-farmGreen mb-2">
-              Buy {crop.name} - Fresh Harvest
+              {t("buyNow")} {crop.name} - Fresh Harvest
             </h3>
 
             <p className="text-sm text-gray-600">
-              Farmer: {crop.farm_name || crop.farmer_name || "Unknown"}
+              {t("farmer")}: {crop.farm_name || crop.farmer_name || "Unknown"}
             </p>
             {crop.farmer_location && (
               <p className="text-xs text-gray-500">
@@ -203,29 +209,29 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
           <div className="space-y-4">
             <div className="card p-4">
               <h4 className="text-sm font-semibold text-slate-700 mb-2">
-                Order Summary
+                {t("orderSummary")}
               </h4>
               <div className="text-sm text-slate-600 space-y-1">
                 <div className="flex items-center justify-between">
-                  <span>Price per kg</span>
+                  <span>{t("pricePerKg")}</span>
                   <span className="font-medium">Rs {crop.price_per_kg}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span>Quantity</span>
+                  <span>{t("quantity")}</span>
                   <span className="font-medium">{quantity} kg</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span>Subtotal</span>
+                  <span>{t("subtotal")}</span>
                   <span className="font-medium">
                     Rs {Number.isFinite(total) ? total.toFixed(2) : "0.00"}
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-emerald-700">
-                  <span>Delivery</span>
-                  <span className="font-medium">Free</span>
+                <div className="flex items-center justify-between text-emerald-900">
+                  <span>{t("delivery")}</span>
+                  <span className="font-medium">{t("free")}</span>
                 </div>
                 <div className="border-t pt-2 flex items-center justify-between text-slate-800">
-                  <span className="font-semibold">Total</span>
+                  <span className="font-semibold">{t("total")}</span>
                   <span className="font-semibold">
                     Rs {Number.isFinite(total) ? total.toFixed(2) : "0.00"}
                   </span>
@@ -234,10 +240,10 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
             </div>
 
             <div className="border rounded-lg p-4 bg-farmLight/30">
-              <h4 className="text-sm font-semibold mb-3">Delivery Address</h4>
+              <h4 className="text-sm font-semibold mb-3">{t("deliveryAddress")}</h4>
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-medium mb-1">Full Name</label>
+                  <label className="block text-xs font-medium mb-1">{t("fullName")}</label>
                   <input
                     value={address.name}
                     onChange={(e) =>
@@ -247,11 +253,12 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
                       }))
                     }
                     placeholder="Recipient name"
+                    aria-label={t("recipientName")}
                     className="w-full p-2 border rounded"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1">Phone</label>
+                  <label className="block text-xs font-medium mb-1">{t("phone")}</label>
                   <input
                     value={address.phone}
                     onChange={(e) =>
@@ -261,11 +268,12 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
                       }))
                     }
                     placeholder="10-digit mobile"
+                    aria-label={t("mobile10Digit")}
                     className="w-full p-2 border rounded"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1">Pincode</label>
+                  <label className="block text-xs font-medium mb-1">{t("pincode")}</label>
                   <input
                     value={address.postal_code}
                     onChange={(e) =>
@@ -275,12 +283,13 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
                       }))
                     }
                     placeholder="Postal code"
+                    aria-label={t("postalCode")}
                     className="w-full p-2 border rounded"
                   />
                 </div>
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-medium mb-1">
-                    Address Line 1
+                    {t("addressLine1")}
                   </label>
                   <input
                     value={address.address_line1}
@@ -291,12 +300,13 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
                       }))
                     }
                     placeholder="House no, Street, Area"
+                    aria-label={t("houseStreetArea")}
                     className="w-full p-2 border rounded"
                   />
                 </div>
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-medium mb-1">
-                    Address Line 2 (optional)
+                    {t("addressLine2")} (optional)
                   </label>
                   <input
                     value={address.address_line2}
@@ -307,11 +317,12 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
                       }))
                     }
                     placeholder="Landmark, Apartment"
+                    aria-label={t("landmarkApartment")}
                     className="w-full p-2 border rounded"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1">City</label>
+                  <label className="block text-xs font-medium mb-1">{t("city")}</label>
                   <input
                     value={address.city}
                     onChange={(e) =>
@@ -321,11 +332,12 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
                       }))
                     }
                     placeholder="City"
+                    aria-label={t("city")}
                     className="w-full p-2 border rounded"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium mb-1">State</label>
+                  <label className="block text-xs font-medium mb-1">{t("state")}</label>
                   <input
                     value={address.state}
                     onChange={(e) =>
@@ -335,6 +347,7 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
                       }))
                     }
                     placeholder="State"
+                    aria-label={t("state")}
                     className="w-full p-2 border rounded"
                   />
                 </div>
@@ -345,7 +358,7 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
             </div>
 
             <div>
-              <label className="block mb-2 text-sm font-medium">Quantity (kg)</label>
+              <label className="block mb-2 text-sm font-medium">{t("quantityKg")}</label>
               <input
                 type="number"
                 min="1"
@@ -357,7 +370,7 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
             </div>
 
             <div>
-              <label className="block mb-2 text-sm font-medium">Payment Method</label>
+              <label className="block mb-2 text-sm font-medium">{t("paymentMethod")}</label>
               <select
                 value={paymentMethod}
                 onChange={(e) => setPaymentMethod(e.target.value)}
@@ -371,24 +384,24 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
 
             <div className="flex justify-end gap-3">
               <button onClick={onClose} className="btn-outline">
-                Cancel
+                {t("cancel")}
               </button>
               <button
                 onClick={placeOrder}
                 disabled={loading}
                 className="btn-primary"
               >
-                {loading ? "Placing..." : "Place Order"}
+                {loading ? "Placing..." : t("placeOrder")}
               </button>
             </div>
 
             <div className="border-t pt-4">
               <h4 className="text-lg font-semibold mb-2">Customer Reviews</h4>
               {reviewsLoading ? (
-                <p className="text-sm text-gray-500">Loading reviews...</p>
+                <p className="text-sm text-gray-500">{t("loadingReviews")}</p>
               ) : reviews.length === 0 ? (
                 <p className="text-sm text-gray-500">
-                  No reviews yet. Be the first!
+                  {t("beFirstReview")}
                 </p>
               ) : (
                 <div className="space-y-3">
@@ -413,13 +426,13 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
 
               <div className="mt-4 space-y-2">
                 <h5 className="text-sm font-semibold">
-                  Add your review (verified buyers only)
+                  {t("addReviewVerified")}
                 </h5>
                 {reviewError && (
                   <p className="text-sm text-red-500">{reviewError}</p>
                 )}
                 <div className="flex items-center gap-2">
-                  <label className="text-sm">Rating</label>
+                  <label className="text-sm">{t("rating")}</label>
                   <select
                     value={reviewForm.rating}
                     onChange={(e) =>
@@ -446,15 +459,15 @@ export default function BuyCropModal({ crop, onClose, onSuccess }) {
                       comment: e.target.value,
                     }))
                   }
-                  placeholder="Share your experience..."
+                  placeholder={t("shareExperience")}
                   className="w-full border rounded p-2 text-sm"
                 />
                 <button
                   onClick={submitReview}
                   disabled={reviewSubmitting}
-                  className="px-3 py-2 bg-farmGreen text-white rounded text-sm"
+                  className="btn-primary px-4 py-2 text-sm"
                 >
-                  {reviewSubmitting ? "Submitting..." : "Submit Review"}
+                  {reviewSubmitting ? t("submitting") : t("submitReview")}
                 </button>
               </div>
             </div>

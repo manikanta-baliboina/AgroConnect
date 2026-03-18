@@ -4,10 +4,16 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import { normalizeRole } from "../utils/auth";
+import PageTransition from "../components/PageTransition";
+import { useLanguage } from "../context/LanguageContext";
+
+const photoUrl =
+  "https://images.unsplash.com/photo-1492496913980-501348b61469?auto=format&fit=crop&w=1400&q=80";
 
 export default function Register() {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { t } = useLanguage();
 
   const [form, setForm] = useState({
     username: "",
@@ -65,7 +71,7 @@ export default function Register() {
       }
 
       setError("Registration succeeded, but role could not be determined.");
-    } catch (err) {
+    } catch {
       setError("Registration failed. Try again.");
     } finally {
       setSubmitting(false);
@@ -73,154 +79,195 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-farmLight px-4">
-      <motion.form
-        onSubmit={handleSubmit}
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2 }}
-        className="glass-panel p-8 rounded-2xl w-full max-w-lg"
-      >
-        <h2 className="text-3xl font-bold text-farmGreen text-center flex items-center justify-center gap-2">
-          <span className="inline-flex items-center justify-center w-9 h-9 bg-farmGreen/10 rounded-full">
-            <svg
-              viewBox="0 0 24 24"
-              width="20"
-              height="20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-farmGreen"
-              aria-hidden="true"
-            >
-              <path d="M4 19c5-7 11-9 16-10" />
-              <path d="M6 19c3-4 6-6 10-7" />
-              <path d="M8 19c2-2 4-3 6-3" />
-            </svg>
-          </span>
-          Join AgroConnect
-        </h2>
-        <p className="text-sm text-gray-500 text-center mt-1">
-          Create your account to start trading crops
-        </p>
-
-        {error && (
-          <p className="text-red-500 text-sm mt-4 text-center">{error}</p>
-        )}
-
-        <div className="mt-6">
-          <label className="block text-sm font-medium">Username</label>
-          <input
-            type="text"
-            name="username"
-            required
-            onChange={handleChange}
-            className="mt-1 w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-farmGreen outline-none"
-          />
-        </div>
-
-        <div className="mt-4">
-          <label className="block text-sm font-medium">Email</label>
-          <input
-            type="email"
-            name="email"
-            required
-            onChange={handleChange}
-            className="mt-1 w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-farmGreen outline-none"
-          />
-        </div>
-
-        <div className="mt-4">
-          <label className="block text-sm font-medium">Password</label>
-          <input
-            type="password"
-            name="password"
-            required
-            onChange={handleChange}
-            className="mt-1 w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-farmGreen outline-none"
-          />
-        </div>
-
-        <div className="mt-4">
-          <label className="block text-sm font-medium">Confirm Password</label>
-          <input
-            type="password"
-            name="confirmPassword"
-            required
-            onChange={handleChange}
-            className="mt-1 w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-farmGreen outline-none"
-          />
-        </div>
-
-        <div className="mt-4">
-          <label className="block text-sm font-medium">Register as</label>
-          <select
-            name="role"
-            onChange={handleChange}
-            value={form.role}
-            className="mt-1 w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-farmGreen outline-none"
-          >
-            <option value="CUSTOMER">Customer (Buy Crops)</option>
-            <option value="FARMER">Farmer (Sell Crops)</option>
-          </select>
-        </div>
-
-        {form.role === "FARMER" && (
-          <>
-            <div className="mt-4">
-              <label className="block text-sm font-medium">Farm Name</label>
-              <input
-                type="text"
-                name="farm_name"
-                onChange={handleChange}
-                value={form.farm_name}
-                className="mt-1 w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-farmGreen outline-none"
-              />
-            </div>
-
-            <div className="mt-4">
-              <label className="block text-sm font-medium">Location</label>
-              <input
-                type="text"
-                name="location"
-                onChange={handleChange}
-                value={form.location}
-                className="mt-1 w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-farmGreen outline-none"
-              />
-            </div>
-          </>
-        )}
-
-        {form.role === "CUSTOMER" && (
-          <div className="mt-4">
-            <label className="block text-sm font-medium">Address</label>
-            <textarea
-              name="address"
-              rows="2"
-              onChange={handleChange}
-              value={form.address}
-              className="mt-1 w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-farmGreen outline-none"
-            />
-          </div>
-        )}
-
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full mt-6 bg-farmGreen text-white py-3 rounded-xl font-semibold hover:scale-105 transition-transform disabled:opacity-60 disabled:cursor-not-allowed"
+    <PageTransition className="page-shell py-8 md:py-10">
+      <div className="grid overflow-hidden rounded-[2rem] border border-white/55 bg-white/70 shadow-2xl backdrop-blur-xl lg:grid-cols-[1.02fr_0.98fr]">
+        <motion.form
+          onSubmit={handleSubmit}
+          initial={{ opacity: 0, x: -24 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.35 }}
+          className="flex min-h-[680px] flex-col justify-center px-6 py-10 sm:px-10 lg:px-14"
         >
-          {submitting ? "Creating account..." : "Create Account"}
-        </button>
+          <div className="eyebrow w-fit">{t("startTrading")}</div>
+          <h1 className="mt-5 text-4xl font-bold tracking-tight text-slate-950">
+            {t("registerTitle")}
+          </h1>
+          <p className="mt-3 max-w-xl text-sm leading-6 text-slate-600">
+            {t("registerText")}
+          </p>
 
-        <p className="text-sm text-center mt-5">
-          Already have an account?{" "}
-          <Link to="/login" className="text-farmGreen font-semibold">
-            Login
-          </Link>
-        </p>
-      </motion.form>
-    </div>
+          {error ? (
+            <div className="mt-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          ) : null}
+
+          <div className="mt-8 grid gap-5 sm:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
+                {t("username")}
+              </label>
+              <input
+                type="text"
+                name="username"
+                required
+                onChange={handleChange}
+                className="input"
+                value={form.username}
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
+                {t("email")}
+              </label>
+              <input
+                type="email"
+                name="email"
+                required
+                onChange={handleChange}
+                className="input"
+                value={form.email}
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
+                {t("password")}
+              </label>
+              <input
+                type="password"
+                name="password"
+                required
+                onChange={handleChange}
+                className="input"
+                value={form.password}
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
+                {t("confirmPassword")}
+              </label>
+              <input
+                type="password"
+                name="confirmPassword"
+                required
+                onChange={handleChange}
+                className="input"
+                value={form.confirmPassword}
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="mb-2 block text-sm font-semibold text-slate-700">
+                {t("registerAs")}
+              </label>
+              <select
+                name="role"
+                onChange={handleChange}
+                value={form.role}
+                className="input"
+              >
+                <option value="CUSTOMER">{t("customerRole")}</option>
+                <option value="FARMER">{t("farmerRole")}</option>
+              </select>
+            </div>
+
+            {form.role === "FARMER" && (
+              <>
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                    {t("farmName")}
+                  </label>
+                  <input
+                    type="text"
+                    name="farm_name"
+                    onChange={handleChange}
+                    value={form.farm_name}
+                    className="input"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                    {t("location")}
+                  </label>
+                  <input
+                    type="text"
+                    name="location"
+                    onChange={handleChange}
+                    value={form.location}
+                    className="input"
+                  />
+                </div>
+              </>
+            )}
+
+            {form.role === "CUSTOMER" && (
+              <div className="sm:col-span-2">
+                <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  {t("address")}
+                </label>
+                <textarea
+                  name="address"
+                  rows="3"
+                  onChange={handleChange}
+                  value={form.address}
+                  className="input resize-none"
+                />
+              </div>
+            )}
+          </div>
+
+          <motion.button
+            type="submit"
+            disabled={submitting}
+            whileTap={{ scale: 0.985 }}
+            className="btn-primary mt-8 w-full disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {submitting ? "Creating account..." : t("createAccount")}
+          </motion.button>
+
+          <p className="mt-6 text-sm text-slate-600">
+            {t("alreadyHaveAccount")}{" "}
+            <Link to="/login" className="font-semibold text-emerald-800">
+              {t("login")}
+            </Link>
+          </p>
+        </motion.form>
+
+        <div className="hero-photo hidden rounded-none lg:block" style={{ backgroundImage: `url(${photoUrl})` }}>
+          <div className="relative z-10 flex h-full flex-col justify-between p-8 text-white">
+            <div className="badge w-fit bg-white/15 text-white">
+              Field-ready commerce
+            </div>
+            <div className="space-y-5">
+              <div className="grid gap-3 sm:grid-cols-3">
+                {[
+                  ["Verified listings", "Fresh produce with real farm context"],
+                  ["Flexible roles", "Built for both sellers and buyers"],
+                  ["Clear orders", "Simple path from listing to delivery"],
+                ].map(([title, copy]) => (
+                  <div key={title} className="rounded-3xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
+                    <p className="text-sm font-semibold">{title}</p>
+                    <p className="mt-2 text-xs leading-5 text-white/76">{copy}</p>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <p className="text-4xl font-bold leading-tight">
+                  A cleaner first impression for agricultural trade.
+                </p>
+                <p className="mt-3 max-w-md text-sm leading-6 text-white/82">
+                  Better branding, better structure, and quicker actions help
+                  farmers and customers trust the platform faster.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </PageTransition>
   );
 }

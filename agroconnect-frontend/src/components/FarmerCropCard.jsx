@@ -1,6 +1,9 @@
 import { motion } from "framer-motion";
+import { useLanguage } from "../context/LanguageContext";
+import SmartImage from "./SmartImage";
 
 export default function FarmerCropCard({ crop, onEdit, onDelete }) {
+  const { t } = useLanguage();
   const backendBaseUrl = (
     import.meta.env.VITE_API_BASE_URL || "https://agroconnect-oezp.onrender.com"
   ).replace(/\/+$/, "");
@@ -24,9 +27,9 @@ export default function FarmerCropCard({ crop, onEdit, onDelete }) {
       className="bg-white p-6 rounded-xl shadow-md border w-full max-w-md mx-auto"
     >
       {imageSrc ? (
-        <img
+        <SmartImage
           src={imageSrc}
-          alt={crop.name}
+          alt={`${crop.name} crop listing`}
           className="w-full h-48 object-cover rounded-lg mb-3"
         />
       ) : (
@@ -63,15 +66,15 @@ export default function FarmerCropCard({ crop, onEdit, onDelete }) {
       <div className="mt-4 flex gap-3">
         <button
           onClick={onEdit}
-          className="px-3 py-1 text-sm bg-blue-500 text-white rounded"
+          className="btn-outline text-sm"
         >
-          Edit
+          {t("edit")}
         </button>
         <button
           onClick={onDelete}
-          className="px-3 py-1 text-sm bg-red-500 text-white rounded"
+          className="rounded-full bg-red-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-800 focus-visible:outline-red-800"
         >
-          Delete
+          {t("delete")}
         </button>
       </div>
     </motion.div>

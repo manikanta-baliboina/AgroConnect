@@ -1,8 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import api from "../api/axios";
 import OrderStatusBadge from "../components/OrderStatusBadge";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function FarmerOrders() {
+  const { t } = useLanguage();
   const [orderItems, setOrderItems] = useState([]);
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
@@ -77,7 +79,7 @@ export default function FarmerOrders() {
       await api.patch(`farmer/orders/${orderId}/status/`, { status });
       fetchOrders();
     } catch {
-      alert("Status update failed");
+      alert(t("statusUpdateFailed"));
     }
   };
 
@@ -89,7 +91,7 @@ export default function FarmerOrders() {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold text-farmGreen mb-6">
-        {"\u{1F4E6}"} Farmer Orders
+        {"\u{1F4E6}"} {t("orders")}
       </h1>
 
       <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -97,39 +99,39 @@ export default function FarmerOrders() {
           type="text"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search crop..."
-          className="border rounded px-3 py-2 w-56"
+          placeholder={t("crop")}
+          className="input w-56"
         />
         <select
-          className="border rounded px-3 py-2"
+          className="input w-auto min-w-[11rem]"
           value={statusFilter}
           onChange={(event) => {
             setStatusFilter(event.target.value);
             setPage(1);
           }}
         >
-          <option value="ALL">All statuses</option>
-          <option value="PENDING">Pending</option>
-          <option value="CONFIRMED">Confirmed</option>
-          <option value="CANCELLED">Cancelled</option>
+          <option value="ALL">{t("allStatuses")}</option>
+          <option value="PENDING">{t("pending")}</option>
+          <option value="CONFIRMED">{t("confirmed")}</option>
+          <option value="CANCELLED">{t("cancelled")}</option>
         </select>
         <select
-          className="border rounded px-3 py-2"
+          className="input w-auto min-w-[14rem]"
           value={sortBy}
           onChange={(event) => {
             setSortBy(event.target.value);
             setPage(1);
           }}
         >
-          <option value="newest">Newest</option>
-          <option value="oldest">Oldest</option>
-          <option value="quantity_desc">Quantity: High to Low</option>
-          <option value="quantity_asc">Quantity: Low to High</option>
-          <option value="price_desc">Price: High to Low</option>
-          <option value="price_asc">Price: Low to High</option>
+          <option value="newest">{t("newest")}</option>
+          <option value="oldest">{t("oldest")}</option>
+          <option value="quantity_desc">{t("quantityHighToLow")}</option>
+          <option value="quantity_asc">{t("quantityLowToHigh")}</option>
+          <option value="price_desc">{t("priceHighToLow")}</option>
+          <option value="price_asc">{t("priceLowToHigh")}</option>
         </select>
         <button
-          className="px-3 py-2 border rounded"
+          className="btn-outline"
           onClick={() => {
             setSearch("");
             setStatusFilter("ALL");
@@ -137,24 +139,24 @@ export default function FarmerOrders() {
             setPage(1);
           }}
         >
-          Reset
+          {t("reset")}
         </button>
       </div>
 
       {!loading && orderItems.length === 0 ? (
-        <p>{hasFilters ? "No matching orders" : "No orders yet"}</p>
+        <p>{hasFilters ? t("noMatchingOrders") : t("noOrdersYet")}</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full border">
             <thead className="bg-gray-100">
               <tr>
-                <th className="p-2">Order ID</th>
-                <th className="p-2">Crop</th>
-                <th className="p-2">Quantity (kg)</th>
-                <th className="p-2">Total (Rs)</th>
-                <th className="p-2">Status</th>
-                <th className="p-2">Payment</th>
-                <th className="p-2">Action</th>
+                <th className="p-2">{t("orderId")}</th>
+                <th className="p-2">{t("crop")}</th>
+                <th className="p-2">{t("quantityKg")}</th>
+                <th className="p-2">{t("totalRs")}</th>
+                <th className="p-2">{t("status")}</th>
+                <th className="p-2">{t("payment")}</th>
+                <th className="p-2">{t("action")}</th>
               </tr>
             </thead>
 
@@ -230,18 +232,18 @@ export default function FarmerOrders() {
                                 onClick={() =>
                                   updateStatus(item.order_id, "CONFIRMED")
                                 }
-                                className="px-3 py-1 bg-green-600 text-white rounded"
+                                className="rounded-full bg-green-700 px-4 py-2 text-white transition hover:bg-green-800"
                               >
-                                Confirm
+                                {t("confirm")}
                               </button>
 
                               <button
                                 onClick={() =>
                                   updateStatus(item.order_id, "CANCELLED")
                                 }
-                                className="px-3 py-1 bg-red-600 text-white rounded"
+                                className="rounded-full bg-red-700 px-4 py-2 text-white transition hover:bg-red-800"
                               >
-                                Reject
+                                {t("reject")}
                               </button>
                             </>
                           )}
@@ -254,21 +256,23 @@ export default function FarmerOrders() {
           {!loading && totalCount > pageSize && (
             <div className="flex items-center justify-between mt-4">
               <button
-                className="px-3 py-1 border rounded disabled:opacity-50"
+                className="btn-outline disabled:opacity-50"
                 onClick={() => setPage((prev) => Math.max(1, prev - 1))}
                 disabled={page <= 1}
               >
-                Prev
+                {t("prev")}
               </button>
               <span className="text-sm text-gray-600">
-                Page {page} of {totalPages}
+                {t("pageOf")
+                  .replace("{page}", page)
+                  .replace("{totalPages}", totalPages)}
               </span>
               <button
-                className="px-3 py-1 border rounded disabled:opacity-50"
+                className="btn-outline disabled:opacity-50"
                 onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
                 disabled={page >= totalPages}
               >
-                Next
+                {t("next")}
               </button>
             </div>
           )}

@@ -1,9 +1,9 @@
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-white/90">
-      <div className="page-shell app-footer-shell py-6 flex flex-wrap items-center justify-between gap-4 text-sm text-slate-500">
-        <div className="app-footer-brand flex items-center gap-2">
-          <span className="font-semibold text-slate-700">AgroConnect</span>
+    <footer className="mt-10 border-t border-white/40 bg-white/55 backdrop-blur-md">
+      <div className="page-shell app-footer-shell flex flex-wrap items-center justify-between gap-4 py-6 text-sm text-slate-500">
+        <div className="app-footer-brand flex items-center gap-3">
+          <span className="font-semibold text-slate-800">AgroConnect</span>
           <span className="badge">Farm to table</span>
         </div>
         <div className="app-footer-links flex items-center gap-4">

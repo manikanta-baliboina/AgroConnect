@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useLanguage } from "../context/LanguageContext";
+import SmartImage from "./SmartImage";
 
 function Stars({ value = 0 }) {
   const rounded = Math.round(value);
@@ -9,7 +11,7 @@ function Stars({ value = 0 }) {
       {Array.from({ length: 5 }, (_, index) => (
         <span
           key={`star-${index}`}
-          className={index < rounded ? "text-yellow-500" : "text-gray-300"}
+          className={index < rounded ? "text-amber-500" : "text-slate-300"}
         >
           {"\u2605"}
         </span>
@@ -22,52 +24,60 @@ export default function CropCard({ crop, onBuy }) {
   const rating = Number(crop.avg_rating ?? 0);
   const reviews = Number(crop.review_count ?? 0);
   const { addItem } = useCart();
+  const { t } = useLanguage();
 
   return (
     <motion.div
-      whileHover={{ scale: 1.02 }}
-      className="card p-4 hover:shadow-lg transition"
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.2 }}
+      className="card h-full p-4"
     >
       {crop.image_url || crop.image ? (
-        <img
+        <SmartImage
           src={crop.image_url || crop.image}
-          alt={crop.name}
-          className="w-full h-44 object-cover rounded-lg mb-3"
+          alt={`${crop.name} crop from ${crop.farm_name || crop.farmer_name || "a verified"} farm`}
+          className="mb-4 h-48 w-full rounded-[1.35rem] object-cover"
         />
       ) : (
-        <div className="w-full h-44 bg-gray-100 rounded-lg mb-3 flex items-center justify-center text-gray-400 text-sm">
+        <div className="mb-4 flex h-48 w-full items-center justify-center rounded-[1.35rem] bg-slate-100 text-sm text-slate-400">
           No image
         </div>
       )}
 
-      <div className="flex items-start justify-between gap-2">
-        <h3 className="text-lg font-semibold text-slate-800">{crop.name}</h3>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h3 className="text-xl font-semibold text-slate-900">{crop.name}</h3>
+          <p className="mt-1 text-xs uppercase tracking-[0.16em] text-slate-500">
+            {crop.farm_name || crop.farmer_name || "Unknown"} Farm
+          </p>
+        </div>
         <span className="badge">Fresh</span>
       </div>
 
-      <p className="text-xs text-slate-500 mt-1">
-        {crop.farm_name || crop.farmer_name || "Unknown"} Farm
-      </p>
-
       {crop.farmer_location && (
-        <p className="text-xs text-slate-400 mt-1">{crop.farmer_location}</p>
+        <p className="mt-3 text-sm text-slate-500">{crop.farmer_location}</p>
       )}
 
       {crop.description && (
-        <p className="text-sm text-slate-600 mt-2 line-clamp-2">
+        <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-600">
           {crop.description}
         </p>
       )}
 
-      <div className="mt-3 grid gap-1 text-sm">
-        <p className="text-slate-700">
-          Price: <span className="font-semibold">Rs {crop.price_per_kg}</span>{" "}
-          <span className="text-slate-400">/ kg</span>
-        </p>
-        <p className="text-slate-500">Stock: {crop.quantity_kg} kg</p>
+      <div className="mt-4 rounded-[1.25rem] bg-slate-50 p-4 text-sm">
+        <div className="flex items-center justify-between text-slate-700">
+          <span>Price</span>
+          <span className="font-semibold text-emerald-800">
+            Rs {crop.price_per_kg} / kg
+          </span>
+        </div>
+        <div className="mt-2 flex items-center justify-between text-slate-500">
+          <span>Stock</span>
+          <span>{crop.quantity_kg} kg</span>
+        </div>
       </div>
 
-      <div className="mt-3 flex items-center justify-between text-sm">
+      <div className="mt-4 flex items-center justify-between gap-3 text-sm">
         <div className="flex items-center gap-2">
           <Stars value={rating} />
           <span className="text-slate-500">
@@ -76,17 +86,18 @@ export default function CropCard({ crop, onBuy }) {
         </div>
       </div>
 
-      <div className="mt-4 grid gap-2">
-        <button onClick={onBuy} className="w-full btn-primary">
-          Buy Now
-        </button>
-        <button onClick={() => addItem(crop, 1)} className="w-full btn-outline">
-          Add to Cart
-        </button>
-        <Link
-          to={`/customer/crops/${crop.id}`}
-          className="w-full btn-ghost text-center"
+      <div className="mt-5 grid gap-2">
+        <motion.button whileTap={{ scale: 0.985 }} onClick={onBuy} className="btn-primary w-full">
+          {t("buyNow")}
+        </motion.button>
+        <motion.button
+          whileTap={{ scale: 0.985 }}
+          onClick={() => addItem(crop, 1)}
+          className="btn-outline w-full"
         >
+          {t("addToCart")}
+        </motion.button>
+        <Link to={`/customer/crops/${crop.id}`} className="btn-ghost w-full text-center">
           View Details
         </Link>
       </div>

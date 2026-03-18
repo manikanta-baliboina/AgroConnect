@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import api from "../api/axios";
 import FarmerCropCard from "../components/FarmerCropCard";
 import CropFormModal from "../components/CropFormModal";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function FarmerDashboard() {
+  const { t } = useLanguage();
   const [crops, setCrops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState(null);
@@ -70,7 +72,7 @@ export default function FarmerDashboard() {
   };
 
   const handleDelete = (id) => {
-    if (!window.confirm("Delete this crop?")) return;
+    if (!window.confirm(t("deleteCropConfirm"))) return;
     api.delete(`farmer/crops/${id}/`).then(() => {
       fetchCrops();
       fetchMetrics();
@@ -89,7 +91,7 @@ export default function FarmerDashboard() {
       fetchProfile();
     } catch (err) {
       console.error("Profile update failed", err);
-      alert("Profile update failed");
+      alert(t("profileUpdateFailed"));
     } finally {
       setProfileSaving(false);
     }
@@ -105,21 +107,21 @@ export default function FarmerDashboard() {
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-3xl font-bold text-farmGreen">
-          Farmer Dashboard {"\u{1F331}"}
+          {t("farmerDashboard")} {"\u{1F331}"}
         </h2>
 
         <button
           onClick={() => setModalOpen(true)}
-          className="px-5 py-2 bg-farmGreen text-white rounded-lg"
+          className="btn-primary"
         >
-          + Add Crop
+          + {t("addCrop")}
         </button>
       </div>
 
       {/* Inventory KPIs */}
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-lg font-semibold text-farmGreen">
-          Inventory Overview
+          {t("inventoryOverview")}
         </h3>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
@@ -133,25 +135,25 @@ export default function FarmerDashboard() {
         ) : (
           <>
             <div className="p-4 border rounded-lg bg-white">
-              <p className="text-sm text-gray-500">Total Crops</p>
+              <p className="text-sm text-gray-500">{t("totalCrops")}</p>
               <p className="text-2xl font-semibold">
                 {formatNumber(metrics?.total_crops)}
               </p>
             </div>
             <div className="p-4 border rounded-lg bg-white">
-              <p className="text-sm text-gray-500">Total Stock (kg)</p>
+              <p className="text-sm text-gray-500">{t("totalStockKg")}</p>
               <p className="text-2xl font-semibold">
                 {formatNumber(metrics?.total_stock_kg)}
               </p>
             </div>
             <div className="p-4 border rounded-lg bg-white">
-              <p className="text-sm text-gray-500">Confirmed Revenue</p>
+              <p className="text-sm text-gray-500">{t("confirmedRevenue")}</p>
               <p className="text-2xl font-semibold">
                 {formatMoney(metrics?.confirmed_revenue)}
               </p>
             </div>
             <div className="p-4 border rounded-lg bg-white">
-              <p className="text-sm text-gray-500">Orders (Last 7 Days)</p>
+              <p className="text-sm text-gray-500">{t("ordersLast7Days")}</p>
               <p className="text-2xl font-semibold">
                 {formatNumber(metrics?.recent_orders)}
               </p>
@@ -162,37 +164,37 @@ export default function FarmerDashboard() {
 
       <div className="bg-white border rounded-xl p-5 mb-8">
         <h3 className="text-lg font-semibold text-farmGreen mb-3">
-          Farm Profile
+          {t("farmProfile")}
         </h3>
         {profileLoading ? (
           <div className="h-16 bg-gray-100 rounded animate-pulse" />
         ) : (
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium mb-1">Farm Name</label>
+              <label className="block text-sm font-medium mb-1">{t("farmName")}</label>
               <input
                 name="farm_name"
                 value={profile.farm_name}
                 onChange={handleProfileChange}
-                className="w-full border rounded px-3 py-2"
+                className="input"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Location</label>
+              <label className="block text-sm font-medium mb-1">{t("location")}</label>
               <input
                 name="location"
                 value={profile.location}
                 onChange={handleProfileChange}
-                className="w-full border rounded px-3 py-2"
+                className="input"
               />
             </div>
             <div className="sm:col-span-2 flex justify-end">
               <button
                 onClick={saveProfile}
                 disabled={profileSaving}
-                className="px-4 py-2 bg-farmGreen text-white rounded"
+                className="btn-primary"
               >
-                {profileSaving ? "Saving..." : "Save Profile"}
+                {profileSaving ? "Saving..." : t("saveProfile")}
               </button>
             </div>
           </div>
@@ -200,7 +202,7 @@ export default function FarmerDashboard() {
       </div>
 
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-lg font-semibold text-farmGreen">Order Summary</h3>
+        <h3 className="text-lg font-semibold text-farmGreen">{t("orderSummaryTitle")}</h3>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
         {metricsLoading ? (
@@ -213,25 +215,25 @@ export default function FarmerDashboard() {
         ) : (
           <>
             <div className="p-4 border rounded-lg bg-white">
-              <p className="text-sm text-gray-500">Total Orders</p>
+              <p className="text-sm text-gray-500">{t("totalOrders")}</p>
               <p className="text-2xl font-semibold">
                 {formatNumber(metrics?.total_orders)}
               </p>
             </div>
             <div className="p-4 border rounded-lg bg-white">
-              <p className="text-sm text-gray-500">Pending Orders</p>
+              <p className="text-sm text-gray-500">{t("pendingOrders")}</p>
               <p className="text-2xl font-semibold">
                 {formatNumber(metrics?.pending_orders)}
               </p>
             </div>
             <div className="p-4 border rounded-lg bg-white">
-              <p className="text-sm text-gray-500">Confirmed Orders</p>
+              <p className="text-sm text-gray-500">{t("confirmedOrders")}</p>
               <p className="text-2xl font-semibold">
                 {formatNumber(metrics?.confirmed_orders)}
               </p>
             </div>
             <div className="p-4 border rounded-lg bg-white">
-              <p className="text-sm text-gray-500">Cancelled Orders</p>
+              <p className="text-sm text-gray-500">{t("cancelledOrders")}</p>
               <p className="text-2xl font-semibold">
                 {formatNumber(metrics?.cancelled_orders)}
               </p>
@@ -241,10 +243,21 @@ export default function FarmerDashboard() {
       </div>
 
       {/* Content */}
-      {loading && <p>Loading...</p>}
+      {loading && (
+        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div key={index} className="card p-5">
+              <div className="h-48 animate-pulse rounded-[1.25rem] bg-slate-100" />
+              <div className="mt-4 h-5 w-2/3 animate-pulse rounded-full bg-slate-100" />
+              <div className="mt-3 h-4 w-1/2 animate-pulse rounded-full bg-slate-100" />
+              <div className="mt-6 h-10 animate-pulse rounded-full bg-slate-100" />
+            </div>
+          ))}
+        </div>
+      )}
 
       {!loading && crops.length === 0 && (
-        <p>No crops added yet {"\u{1F33E}"}</p>
+        <p>{t("noCropsAddedYet")} {"\u{1F33E}"}</p>
       )}
 
       <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">

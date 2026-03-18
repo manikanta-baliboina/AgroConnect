@@ -1,6 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { normalizeRole } from "../utils/auth";
+import { RouteSkeleton } from "../components/LoadingSkeletons";
 
 export default function ProtectedRoute({ children, role, allowedRole }) {
   const { user, loading } = useAuth();
@@ -8,7 +9,7 @@ export default function ProtectedRoute({ children, role, allowedRole }) {
   const userRole = normalizeRole(user?.role || localStorage.getItem("role"));
 
   if (loading) {
-    return <p className="text-center mt-10">Loading...</p>;
+    return <RouteSkeleton />;
   }
 
   if (!userRole) {

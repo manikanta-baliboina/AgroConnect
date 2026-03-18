@@ -3,6 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios";
 import BuyCropModal from "../components/BuyCropModal";
 import { useCart } from "../context/CartContext";
+import { useLanguage } from "../context/LanguageContext";
+import SmartImage from "../components/SmartImage";
+import { CropDetailsSkeleton } from "../components/LoadingSkeletons";
 
 function Stars({ value = 0 }) {
   const rounded = Math.round(value);
@@ -29,6 +32,7 @@ export default function CropDetails() {
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
   const [showBuy, setShowBuy] = useState(false);
+  const { t } = useLanguage();
 
   const rating = useMemo(() => Number(crop?.avg_rating || 0), [crop]);
 
@@ -76,11 +80,7 @@ export default function CropDetails() {
   }, [id]);
 
   if (loading) {
-    return (
-      <div className="page-shell py-10">
-        <div className="card p-6">Loading crop...</div>
-      </div>
-    );
+    return <CropDetailsSkeleton />;
   }
 
   if (!crop) {
@@ -94,17 +94,17 @@ export default function CropDetails() {
   return (
     <div className="page-shell py-8">
       <button onClick={() => navigate(-1)} className="btn-ghost mb-4">
-        Back to marketplace
+        {t("backToMarketplace")}
       </button>
 
       <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
         <div className="card p-5">
           {crop.image_url || crop.image ? (
-            <img
-              src={crop.image_url || crop.image}
-              alt={crop.name}
-              className="w-full h-80 object-cover rounded-xl"
-            />
+              <SmartImage
+                src={crop.image_url || crop.image}
+                alt={`${crop.name} crop from ${crop.farm_name || crop.farmer_name || "a verified"} farm`}
+                className="w-full h-80 object-cover rounded-xl"
+              />
           ) : (
             <div className="w-full h-80 bg-gray-100 rounded-xl flex items-center justify-center text-gray-400">
               No image
@@ -150,30 +150,30 @@ export default function CropDetails() {
                 Price: <span className="font-semibold">Rs {crop.price_per_kg}</span>{" "}
                 <span className="text-slate-400">/ kg</span>
               </p>
-              <p className="text-slate-500">Available stock: {crop.quantity_kg} kg</p>
+              <p className="text-slate-500">{t("availableStock")}: {crop.quantity_kg} kg</p>
             </div>
 
             <div className="mt-4 grid gap-3">
               <button onClick={() => setShowBuy(true)} className="btn-primary">
-                Buy Now
+                {t("buyNow")}
               </button>
               <button
                 onClick={() => addItem(crop, 1)}
                 className="btn-outline"
               >
-                Add to Cart
+                {t("addToCart")}
               </button>
             </div>
           </div>
 
           <div className="card p-5">
             <h3 className="text-sm font-semibold text-slate-700 mb-2">
-              Delivery & quality
+              {t("deliveryQuality")}
             </h3>
             <ul className="text-sm text-slate-600 space-y-2">
-              <li>Direct from verified farmers</li>
-              <li>Quality-checked before dispatch</li>
-              <li>Secure packaging & cold chain</li>
+              <li>{t("directFromFarmers")}</li>
+              <li>{t("qualityChecked")}</li>
+              <li>{t("securePackaging")}</li>
             </ul>
           </div>
         </div>
@@ -181,12 +181,20 @@ export default function CropDetails() {
 
       <div className="mt-8 card p-5">
         <h3 className="text-lg font-semibold text-slate-800 mb-3">
-          Customer reviews
+          {t("customerReviews")}
         </h3>
         {reviewsLoading ? (
-          <p className="text-sm text-slate-500">Loading reviews...</p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className="border rounded-lg p-3 text-sm">
+                <div className="h-4 w-28 animate-pulse rounded-full bg-slate-100" />
+                <div className="mt-3 h-4 w-full animate-pulse rounded-full bg-slate-100" />
+                <div className="mt-2 h-4 w-5/6 animate-pulse rounded-full bg-slate-100" />
+              </div>
+            ))}
+          </div>
         ) : reviews.length === 0 ? (
-          <p className="text-sm text-slate-500">No reviews yet.</p>
+          <p className="text-sm text-slate-500">{t("noReviewsYet")}</p>
         ) : (
           <div className="grid gap-3 sm:grid-cols-2">
             {reviews.map((review) => (

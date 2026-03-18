@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function CropFormModal({
   isOpen,
@@ -7,6 +8,7 @@ export default function CropFormModal({
   onSubmit,
   initialData,
 }) {
+  const { t } = useLanguage();
   const [form, setForm] = useState({
     name: "",
     category: "",
@@ -52,7 +54,7 @@ export default function CropFormModal({
     e.preventDefault();
     setError("");
     if (form.harvest_date && form.harvest_date > today) {
-      setError("Harvest date cannot be in the future.");
+      setError(t("harvestDateFuture"));
       return;
     }
     const payload = new FormData();
@@ -73,16 +75,19 @@ export default function CropFormModal({
       <motion.form
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
+        role="dialog"
+        aria-modal="true"
+        aria-label={initialData ? t("editCrop") : t("addCropTitle")}
         className="bg-white p-6 rounded-xl w-full max-w-md"
         onSubmit={handleSubmit}
       >
         <h3 className="text-xl font-bold text-farmGreen mb-4">
-          {initialData ? "Edit Crop" : "Add Crop"} {"\u{1F33E}"}
+          {initialData ? t("editCrop") : t("addCropTitle")} {"\u{1F33E}"}
         </h3>
 
         <input
           name="name"
-          placeholder="Crop Name"
+          placeholder={t("cropName")}
           required
           value={form.name}
           onChange={handleChange}
@@ -91,7 +96,7 @@ export default function CropFormModal({
 
         <input
           name="category"
-          placeholder="Category"
+          placeholder={t("category")}
           required
           value={form.category}
           onChange={handleChange}
@@ -100,7 +105,7 @@ export default function CropFormModal({
 
         <textarea
           name="description"
-          placeholder="Short description"
+          placeholder={t("shortDescription")}
           value={form.description}
           onChange={handleChange}
           className="input mb-3"
@@ -110,7 +115,7 @@ export default function CropFormModal({
         <input
           type="number"
           name="price_per_kg"
-          placeholder="Price per kg"
+          placeholder={t("pricePerKg")}
           required
           value={form.price_per_kg}
           onChange={handleChange}
@@ -120,7 +125,7 @@ export default function CropFormModal({
         <input
           type="number"
           name="quantity_kg"
-          placeholder="Quantity (kg)"
+          placeholder={t("quantityKg")}
           required
           value={form.quantity_kg}
           onChange={handleChange}
@@ -152,15 +157,15 @@ export default function CropFormModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 border rounded"
+            className="btn-outline"
           >
-            Cancel
+            {t("cancel")}
           </button>
           <button
             type="submit"
-            className="px-4 py-2 bg-farmGreen text-white rounded"
+            className="btn-primary"
           >
-            Save
+            {t("save")}
           </button>
         </div>
       </motion.form>
